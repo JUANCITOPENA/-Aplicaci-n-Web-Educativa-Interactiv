@@ -2,7 +2,7 @@
 
 ¡Una aplicación web divertida e interactiva diseñada para ayudar a niños de 5 a 12 años a aprender y practicar operaciones matemáticas básicas de una manera atractiva y estimulante!
 
-<!-- Reemplaza con tu usuario/repo --> Licencia <!-- Asume licencia MIT, crea archivo LICENSE -->
+[![Licencia MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 <!-- Opcional: Añadir un GIF o Screenshot principal aquí -->
 <!-- ![Demo Aventura Matemática](./screenshots/demo.gif) -->
 
@@ -58,8 +58,8 @@ Aventura Matemática Interactiva transforma el aprendizaje de las matemáticas e
   - LocalStorage para guardar progreso.
 
 ## 🚀 Demo en Vivo (Opcional)
-<!-- [Puedes probar la aplicación aquí!](https://tu-usuario.github.io/tu-repositorio/) -->
-(Añade el enlace si despliegas la aplicación, por ejemplo en GitHub Pages)
+<!-- [Puedes probar la aplicación aquí!](https://juancitopena.github.io/-Aplicaci-n-Web-Educativa-Interactiv/) -->
+(Añade el enlace si despliegas la aplicación en GitHub Pages)
 
 ## 🎮 Cómo Empezar (Uso Local)
 
@@ -67,13 +67,12 @@ Como esta es una aplicación puramente frontend, no necesitas instalación compl
 
 ### 1️⃣ Clona el repositorio:
 ```bash
-git clone https://github.com/TU_USUARIO/TU_REPOSITORIO.git
+git clone https://github.com/JUANCITOPENA/-Aplicaci-n-Web-Educativa-Interactiv.git
 ```
-(Reemplaza TU_USUARIO/TU_REPOSITORIO con los detalles correctos)
 
 ### 2️⃣ Navega a la carpeta del proyecto:
 ```bash
-cd TU_REPOSITORIO
+cd -Aplicaci-n-Web-Educativa-Interactiv
 ```
 
 ### 3️⃣ Abre el archivo index.html:
