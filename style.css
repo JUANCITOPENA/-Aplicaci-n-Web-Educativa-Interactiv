@@ -1,0 +1,728 @@
+/* --- Base & Variables --- */
+:root {
+    /* Color Palette (Inspired by user's CSS) */
+    --primary-color: #6a11cb; /* Morado principal */
+    --secondary-color: #2575fc; /* Azul secundario */
+    --accent-color: #ff6b6b; /* Coral para acentos */
+    --success-color: #28a745; /* Verde éxito */
+    --warning-color: #ffc107; /* Amarillo advertencia */
+    --danger-color: #dc3545; /* Rojo peligro */
+    --info-color: #0dcaf0; /* Cian info */
+
+    /* Light Theme */
+    --background-light: #f0f2f5; /* Gris muy claro */
+    --text-light: #1c1e21; /* Casi negro */
+    --card-bg-light: #ffffff; /* Blanco */
+    --modal-bg-light: #ffffff;
+    --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --input-bg-light: #ffffff;
+    --input-border-light: #ced4da;
+    --button-text-light: #ffffff;
+    --progress-bg-light: #e9ecef;
+    --explanation-bg-light: rgba(0,0,0,0.03);
+    --explanation-border-light: var(--secondary-color);
+    --explanation-text-light: #555;
+
+    /* Dark Theme */
+    --background-dark: #121212; /* Negro/Gris oscuro */
+    --text-dark: #e4e6eb; /* Gris claro */
+    --card-bg-dark: #1e1e1e; /* Gris oscuro para tarjetas */
+    --modal-bg-dark: #2a2a2a; /* Fondo modal oscuro */
+    --shadow-dark: 0 6px 16px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada */
+    --input-bg-dark: #3a3b3c;
+    --input-border-dark: #555;
+    --button-text-dark: #ffffff; /* Keep text white on dark buttons */
+    --progress-bg-dark: #3a3b3c;
+    --explanation-bg-dark: rgba(255,255,255,0.05);
+    --explanation-border-dark: var(--primary-color);
+    --explanation-text-dark: #ccc;
+
+    /* General Styles */
+    --border-radius: 12px;
+    --border-radius-lg: 20px;
+    --font-family-sans-serif: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+/* --- Animations --- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeOut { /* Not actively used, but available */
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-15px); }
+}
+@keyframes timerPulse { /* For timer urgency */
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 8px rgba(220, 53, 69, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+}
+@keyframes feedbackPop { /* For feedback icons */
+  0% { transform: scale(0.5) rotate(-15deg); opacity: 0; }
+  70% { transform: scale(1.1) rotate(5deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+@keyframes brandPulse { /* For navbar brand icon */
+    0% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.08) rotate(5deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+@keyframes tada { /* For correct feedback modal icon */
+   from { transform: scale3d(1, 1, 1); }
+   10%, 20% { transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg); }
+   30%, 50%, 70%, 90% { transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg); }
+   40%, 60%, 80% { transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg); }
+   to { transform: scale3d(1, 1, 1); }
+}
+@keyframes shakeX { /* For incorrect feedback modal icon */
+   10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+
+/* --- General Body & Theme Setup --- */
+body {
+    font-family: var(--font-family-sans-serif);
+    background-color: var(--background-light);
+    color: var(--text-light);
+    transition: background-color 0.4s ease, color 0.4s ease;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+body.dark-mode {
+    background-color: var(--background-dark);
+    color: var(--text-dark);
+}
+
+/* --- Navbar --- */
+.navbar {
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    box-shadow: var(--shadow-light);
+    position: sticky; /* Keep navbar visible */
+    top: 0;
+    z-index: 1030; /* Ensure it's above other content */
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+    transition: box-shadow 0.4s ease;
+}
+body.dark-mode .navbar {
+    box-shadow: var(--shadow-dark);
+}
+.navbar-brand {
+    font-weight: 700;
+    color: #fff !important;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s ease;
+}
+.navbar-brand:hover {
+    transform: scale(1.03); /* Slight grow on hover */
+}
+.navbar-brand i {
+    margin-right: 8px;
+    animation: brandPulse 2.5s infinite ease-in-out; /* Pulse animation */
+}
+.user-info-nav {
+     color: rgba(255, 255, 255, 0.9);
+     font-size: 0.9rem;
+     margin-right: 15px;
+     background-color: rgba(255, 255, 255, 0.1); /* Subtle background */
+     padding: 5px 10px;
+     border-radius: var(--border-radius);
+     transition: background-color 0.4s ease;
+}
+body.dark-mode .user-info-nav {
+     background-color: rgba(0, 0, 0, 0.2);
+}
+.dark-mode-toggle {
+    cursor: pointer;
+    font-size: 1.6rem;
+    color: var(--warning-color); /* Yellow icon */
+    transition: transform 0.4s ease, color 0.4s ease;
+}
+.dark-mode-toggle:hover {
+    transform: rotate(20deg) scale(1.1);
+    color: #fff; /* White on hover */
+}
+
+/* --- Main Container & Sections --- */
+.main-container {
+    padding: 40px 15px;
+    flex-grow: 1; /* Allow container to fill space */
+    width: 100%;
+    max-width: 1320px; /* Standard Bootstrap XL container width */
+    margin-left: auto;
+    margin-right: auto;
+}
+/* Section visibility controlled by JS adding/removing d-none */
+section {
+    /* Sections are hidden/shown via JS adding/removing 'd-none' */
+    /* We add an animation when they become visible */
+}
+section:not(.d-none) {
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+
+/* --- Titles --- */
+.section-title {
+    text-align: center;
+    margin-bottom: 50px;
+    font-weight: 700;
+    font-size: clamp(1.8rem, 5vw, 2.5rem); /* Responsive font size */
+    color: var(--primary-color);
+    position: relative;
+    padding-bottom: 10px;
+    /* animation: fadeIn 0.7s ease backwards 0.2s; Slightly delayed fade-in */
+}
+.section-title::after { /* Underline effect */
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 80px; height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    border-radius: 2px;
+}
+body.dark-mode .section-title {
+    color: var(--secondary-color); /* Use secondary color in dark mode */
+}
+body.dark-mode .section-title::after {
+     background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+}
+
+/* --- Exercise Selection Cards --- */
+.exercise-card {
+    background-color: var(--card-bg-light);
+    border: 1px solid transparent; /* Start transparent for hover effect */
+    border-radius: var(--border-radius-lg); /* Larger radius */
+    box-shadow: var(--shadow-light);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.4s ease;
+    cursor: pointer;
+    text-align: center;
+    padding: clamp(20px, 4vw, 30px); /* Responsive padding */
+    margin-bottom: 30px; /* Spacing between cards */
+    height: 100%; /* Make cards in same row equal height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden; /* Needed for pseudo-element effects */
+}
+.exercise-card::before { /* Subtle gradient shimmer on hover */
+    content: "";
+    position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+    transform: rotate(45deg);
+    transition: opacity 0.6s ease;
+    opacity: 0; pointer-events: none;
+}
+body.dark-mode .exercise-card {
+    background-color: var(--card-bg-dark);
+    border-color: transparent;
+    box-shadow: var(--shadow-dark);
+}
+body.dark-mode .exercise-card::before {
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
+}
+.exercise-card:hover {
+    transform: translateY(-8px) scale(1.02); /* Lift and slightly enlarge */
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12); /* Increase shadow */
+    border-color: var(--secondary-color); /* Add border color */
+}
+.exercise-card:hover::before { opacity: 1; } /* Show shimmer */
+body.dark-mode .exercise-card:hover {
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.4); /* Darker shadow */
+    border-color: var(--primary-color);
+}
+.exercise-card i { /* Icon styling */
+    font-size: clamp(2.8rem, 8vw, 3.8rem); /* Responsive icon size */
+    margin-bottom: 20px;
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; /* Gradient text effect */
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bounce effect */
+}
+.exercise-card:hover i { transform: scale(1.15) rotate(8deg); } /* Icon animation on hover */
+.exercise-card h5 { /* Card title */
+    font-weight: 700;
+    font-size: clamp(1.1rem, 3vw, 1.3rem);
+    margin-bottom: 0;
+    color: inherit; /* Inherit color from body (adapts to dark mode) */
+    transition: color 0.4s ease;
+}
+body.dark-mode .exercise-card h5 { color: var(--text-dark); }
+
+/* --- Exercise Section (#exercise-section) --- */
+#exercise-section {
+    background-color: var(--card-bg-light);
+    border-radius: var(--border-radius-lg);
+    padding: clamp(25px, 5vw, 40px);
+    box-shadow: var(--shadow-light);
+    margin-top: 30px;
+    transition: background-color 0.4s ease, box-shadow 0.4s ease;
+}
+body.dark-mode #exercise-section {
+    background-color: var(--card-bg-dark);
+    box-shadow: var(--shadow-dark);
+}
+#question-area { /* Where the math problem is displayed */
+    font-size: clamp(2rem, 6vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 30px; text-align: center;
+    min-height: 70px; /* Ensure space even if question is short */
+    color: var(--primary-color);
+    transition: color 0.4s ease;
+    padding: 10px;
+    border-radius: var(--border-radius);
+    background-color: rgba(106, 17, 203, 0.05); /* Very subtle background */
+}
+body.dark-mode #question-area {
+    color: var(--secondary-color);
+    background-color: rgba(37, 117, 252, 0.1);
+}
+#answer-input { /* User input field */
+    max-width: 280px; margin: 0 auto 30px auto; /* Centered with limited width */
+    text-align: center; font-size: clamp(1.6rem, 5vw, 2.2rem);
+    border-radius: var(--border-radius);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.08); /* Inner shadow */
+    border: 2px solid var(--input-border-light);
+    padding: 10px 15px;
+    background-color: var(--input-bg-light);
+    color: var(--text-light);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.4s ease, color 0.4s ease;
+}
+#answer-input:focus {
+    border-color: var(--secondary-color);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1), 0 0 0 3px rgba(37, 117, 252, 0.25); /* Focus ring */
+    outline: none;
+}
+body.dark-mode #answer-input {
+     background-color: var(--input-bg-dark); color: var(--text-dark);
+     border-color: var(--input-border-dark);
+}
+body.dark-mode #answer-input:focus {
+    border-color: var(--primary-color);
+     box-shadow: inset 0 2px 5px rgba(0,0,0,0.2), 0 0 0 3px rgba(106, 17, 203, 0.3);
+}
+/* Input validation styles */
+#answer-input.is-valid {
+     border-color: var(--success-color) !important;
+     background-color: rgba(40, 167, 69, 0.08);
+}
+#answer-input.is-invalid {
+     border-color: var(--danger-color) !important;
+     background-color: rgba(220, 53, 69, 0.08);
+}
+body.dark-mode #answer-input.is-valid { background-color: rgba(40, 167, 69, 0.2); }
+body.dark-mode #answer-input.is-invalid { background-color: rgba(220, 53, 69, 0.2); }
+
+/* --- Buttons (General Action & Level Selection) --- */
+.btn-action, .level-btn {
+    border-radius: 50px; /* Rounded pill shape */
+    padding: 12px 28px;
+    font-weight: 700;
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; /* Smooth transitions, bouncy transform */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Base shadow */
+    border: 2px solid transparent;
+    margin: 5px;
+    text-transform: uppercase; /* Uppercase text */
+    letter-spacing: 0.5px; /* Slight spacing */
+    cursor: pointer;
+    color: var(--button-text-light); /* Default white text */
+}
+.btn-action:hover, .level-btn:hover:not(.active) {
+    transform: translateY(-4px) scale(1.03); /* Lift and scale on hover */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15); /* Larger shadow on hover */
+}
+body.dark-mode .btn-action { color: var(--button-text-dark); } /* Ensure button text is readable */
+body.dark-mode .btn-action:hover, body.dark-mode .level-btn:hover:not(.active) {
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); /* Darker hover shadow */
+}
+
+/* Level button specific styles */
+.level-btn { /* Default (inactive) state */
+    background-color: transparent;
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    box-shadow: none; /* No shadow for inactive outline buttons */
+}
+body.dark-mode .level-btn {
+    color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+.level-btn.active { /* Active level button */
+     background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+     color: white;
+     border-color: transparent;
+     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.18); /* Slight shadow when active */
+     transform: translateY(1px); /* Slight press effect */
+}
+body.dark-mode .level-btn.active {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+}
+/* Color overrides for different level buttons (inactive state) */
+.level-btn[data-level="intermedio"] { color: var(--warning-color); border-color: var(--warning-color); }
+.level-btn[data-level="avanzado"] { color: var(--danger-color); border-color: var(--danger-color); }
+body.dark-mode .level-btn[data-level="intermedio"] { color: var(--warning-color); border-color: var(--warning-color); }
+body.dark-mode .level-btn[data-level="avanzado"] { color: var(--danger-color); border-color: var(--danger-color); }
+
+/* Specific Action Button Colors */
+#submit-answer { background-color: var(--success-color); }
+#next-question { background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); } /* Gradient for next */
+#generate-report-btn, #generate-mult-report-btn { background-color: var(--info-color); } /* Cyan for reports */
+#generate-final-report-btn { background-color: var(--warning-color); color: #333 !important; } /* Yellow button, dark text for contrast */
+#check-all-tables-btn { background-color: var(--success-color); }
+#back-to-main, #back-to-main-mult { /* Back buttons */
+    background-color: #6c757d; /* Standard grey */
+    font-size: 0.9rem; padding: 8px 15px;
+}
+#back-to-main:hover, #back-to-main-mult:hover { background-color: #5a6268; }
+
+/* --- Multiplication Section (#multiplication-section) --- */
+#multiplication-section {
+    background-color: var(--card-bg-light);
+    border-radius: var(--border-radius-lg);
+    padding: clamp(25px, 5vw, 40px);
+    box-shadow: var(--shadow-light); margin-top: 30px;
+    transition: background-color 0.4s ease, box-shadow 0.4s ease;
+}
+body.dark-mode #multiplication-section {
+    background-color: var(--card-bg-dark); box-shadow: var(--shadow-dark);
+}
+.multiplication-table-card { /* Individual card for each table */
+    background-color: var(--card-bg-light);
+    border: 1px solid #e0e0e0;
+    border-radius: var(--border-radius); padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: background-color 0.4s ease, box-shadow 0.3s ease, border-color 0.4s ease;
+    height: 100%; /* Ensure cards in a row have same height */
+}
+.multiplication-table-card:hover { box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+body.dark-mode .multiplication-table-card {
+     background-color: var(--card-bg-dark);
+     border: 1px solid #444;
+     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+body.dark-mode .multiplication-table-card:hover { box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+.multiplication-table-card h6 { /* Title for each table card */
+    font-weight: 700; color: var(--primary-color); text-align: center;
+    margin-bottom: 20px; font-size: clamp(1rem, 3vw, 1.15rem);
+    border-bottom: 2px solid var(--secondary-color); padding-bottom: 8px;
+    transition: color 0.4s ease, border-bottom-color 0.4s ease;
+}
+body.dark-mode .multiplication-table-card h6 {
+     color: var(--secondary-color); border-bottom-color: var(--primary-color);
+}
+.multiplication-item { /* Row for each multiplication fact (e.g., 7 x 3 = ?) */
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px; font-size: clamp(0.9rem, 2.5vw, 1rem);
+    flex-wrap: nowrap; /* Prevent wrapping */
+}
+.multiplication-item span { /* The "7 x 3 =" part */
+    flex: 1 1 45%; /* Allow shrinking/growing */
+    text-align: right; padding-right: 8px; font-weight: 500;
+    white-space: nowrap; /* Prevent question from wrapping */
+}
+.multiplication-item input { /* The input field */
+    width: 65px; text-align: center; border: 1px solid var(--input-border-light);
+    border-radius: 6px; padding: 6px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.4s ease, color 0.4s ease;
+    flex: 0 0 65px; /* Fixed width, don't shrink/grow */
+    background-color: var(--input-bg-light);
+    color: var(--text-light);
+    margin-left: 5px; /* Spacing */
+}
+.multiplication-item input:focus {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(37, 117, 252, 0.2); outline: none;
+}
+body.dark-mode .multiplication-item input {
+    background-color: var(--input-bg-dark); color: var(--text-dark); border-color: var(--input-border-dark);
+}
+body.dark-mode .multiplication-item input:focus {
+     border-color: var(--primary-color);
+     box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.25);
+}
+/* Container for feedback icons next to input */
+.multiplication-item > div:last-child { /* Targets the feedback icon container */
+    flex: 0 0 auto; /* Don't grow/shrink, width based on content */
+    display: inline-flex;
+    align-items: center;
+    margin-left: 5px; /* Space before icons */
+}
+.multiplication-item .feedback-icon { /* Correct/Incorrect icons */
+    font-size: 1.3rem; opacity: 0; /* Start hidden */
+    transition: opacity 0.5s ease, transform 0.3s ease;
+    transform: scale(0); /* Start scaled down */
+    margin: 0 2px; /* Spacing between icons if both were shown (they aren't) */
+}
+/* Show the correct icon when input has 'correct' class */
+.multiplication-item input.correct + div .feedback-icon.correct-icon {
+     opacity: 1;
+     animation: feedbackPop 0.4s ease forwards; /* Pop animation */
+}
+/* Show the incorrect icon when input has 'incorrect' class */
+.multiplication-item input.incorrect + div .feedback-icon.incorrect-icon {
+     opacity: 1;
+     animation: feedbackPop 0.4s ease forwards; /* Pop animation */
+}
+.correct-icon { color: var(--success-color); }
+.incorrect-icon { color: var(--danger-color); }
+/* Style input border based on validation class */
+.multiplication-item input.correct { border-color: var(--success-color); }
+.multiplication-item input.incorrect { border-color: var(--danger-color); }
+
+/* --- Progress Chart (#progress-section) --- */
+#progress-section { /* Animation applied via JS */ }
+#progress-chart-container { /* Container for the chart canvas */
+    background-color: var(--card-bg-light);
+    border-radius: var(--border-radius-lg);
+    padding: clamp(20px, 4vw, 35px);
+    box-shadow: var(--shadow-light); margin-top: 30px;
+    min-height: 380px; /* Ensure enough height for the chart */
+    max-width: 100%; overflow: hidden; /* Prevent canvas overflow */
+    transition: background-color 0.4s ease, box-shadow 0.4s ease;
+}
+body.dark-mode #progress-chart-container {
+    background-color: var(--card-bg-dark); box-shadow: var(--shadow-dark);
+}
+#progressChart { max-width: 100%; height: auto !important; } /* Ensure chart fits container */
+
+/* --- Modals (Login & Feedback) --- */
+.modal-content { /* General modal styling */
+    border-radius: var(--border-radius-lg); border: none;
+    background-color: var(--modal-bg-light);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: background-color 0.4s ease, box-shadow 0.4s ease;
+}
+body.dark-mode .modal-content {
+     background-color: var(--modal-bg-dark);
+     box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+.modal-header {
+    border-bottom: none; padding: 20px 25px 10px 25px;
+}
+.modal-title { font-weight: 700; font-size: 1.5rem; }
+.modal-body { padding: 15px 30px 25px 30px; }
+.modal-footer { border-top: none; padding: 10px 30px 25px 30px; justify-content: center; }
+.btn-close { transition: transform 0.3s ease; }
+.btn-close:hover { transform: rotate(90deg); }
+body.dark-mode .btn-close { filter: brightness(0) invert(1); } /* Make close button visible in dark mode */
+
+/* Login Modal Specifics */
+#loginModal .modal-header {
+     background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+     color: white; border-top-left-radius: var(--border-radius-lg);
+     border-top-right-radius: var(--border-radius-lg);
+     padding: 25px;
+}
+#loginModal .modal-title { font-size: 1.6rem; }
+#loginModal .modal-body { padding: 35px; }
+#loginModal .form-label {
+     font-weight: 600; margin-bottom: 0.5rem; font-size: 0.95rem;
+}
+#loginModal .form-control { /* Styling for login inputs */
+     border-radius: var(--border-radius); margin-bottom: 1.2rem;
+     padding: 12px 15px;
+     border: 1px solid var(--input-border-light);
+     background-color: var(--input-bg-light);
+     color: var(--text-light);
+     transition: border-color 0.3s ease, background-color 0.4s ease, color 0.4s ease;
+}
+body.dark-mode #loginModal .form-control {
+    background-color: var(--input-bg-dark); color: var(--text-dark); border-color: var(--input-border-dark);
+}
+#loginModal .form-control:focus {
+     border-color: var(--secondary-color);
+     box-shadow: 0 0 0 3px rgba(37, 117, 252, 0.2);
+     outline: none;
+}
+body.dark-mode #loginModal .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.25);
+}
+/* Login validation feedback */
+#loginModal .invalid-feedback { display: none; width: 100%; margin-top: .25rem; font-size: .875em; color: var(--danger-color); }
+#loginModal .form-control.is-invalid { border-color: var(--danger-color); padding-right: calc(1.5em + .75rem); background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right calc(.375em + .1875rem) center; background-size: calc(.75em + .375rem) calc(.75em + .375rem); }
+#loginModal .form-control.is-invalid:focus { border-color: var(--danger-color); box-shadow: 0 0 0 .25rem rgba(220,53,69,.25); }
+#loginModal .form-control.is-invalid ~ .invalid-feedback { display: block; }
+
+#loginModal .btn-primary { /* The main login button */
+     background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));
+     border: none;
+     color: white !important; /* Ensure text is white */
+}
+#loginModal .btn-primary:hover { background: linear-gradient(90deg, var(--secondary-color), var(--accent-color)); } /* Swap gradient on hover */
+
+/* Feedback Modal Specifics */
+.feedback-modal .modal-header { justify-content: space-between; } /* Title left, close button right */
+.feedback-modal .modal-body { text-align: center; }
+.feedback-modal .modal-body i { /* Main feedback icon (FontAwesome) */
+    font-size: clamp(4rem, 10vw, 5.5rem);
+    margin-bottom: 15px; display: block;
+}
+#correctFeedbackModal .modal-title { color: var(--success-color); }
+#incorrectFeedbackModal .modal-title { color: var(--danger-color); }
+/* Apply specific animations to feedback icons */
+#correctFeedbackModal .modal-body i.fa-star { animation: tada 1.2s ease; }
+#incorrectFeedbackModal .modal-body i.fa-face-frown-open { animation: shakeX 0.8s cubic-bezier(.36,.07,.19,.97) both; }
+
+.feedback-modal .modal-body p { /* Main feedback message */
+    font-size: clamp(1rem, 3vw, 1.2rem);
+    font-weight: 500; margin-bottom: 15px;
+}
+.feedback-modal .explanation { /* Area for detailed explanation */
+    font-style: normal; color: var(--explanation-text-light);
+    font-size: clamp(0.9rem, 2.5vw, 1rem);
+    margin-top: 15px; padding: 15px;
+    background-color: var(--explanation-bg-light);
+    border-radius: var(--border-radius);
+    border-left: 5px solid var(--explanation-border-light);
+    text-align: left; line-height: 1.7;
+    transition: background-color 0.4s ease, color 0.4s ease, border-left-color 0.4s ease;
+}
+body.dark-mode .feedback-modal .explanation {
+    color: var(--explanation-text-dark);
+    background-color: var(--explanation-bg-dark);
+    border-left-color: var(--explanation-border-dark);
+}
+.explanation strong { color: var(--primary-color); font-weight: 700; } /* Highlight numbers */
+body.dark-mode .explanation strong { color: var(--secondary-color); }
+.time-out-explanation { /* Specific style for timeout explanation */
+    border-left-color: var(--warning-color) !important;
+    background-color: rgba(255, 193, 7, 0.08) !important;
+}
+body.dark-mode .time-out-explanation { background-color: rgba(255, 193, 7, 0.15) !important; }
+
+.feedback-modal .btn-modal { /* Buttons inside feedback modals */
+    padding: 10px 30px; /* Use standard button padding */
+}
+#correctFeedbackModal .btn-modal { background-color: var(--success-color); } /* Green button */
+#incorrectFeedbackModal .btn-modal { background-color: var(--warning-color); color: #333 !important; } /* Yellow button, dark text */
+
+/* --- Footer --- */
+footer {
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    color: rgba(255, 255, 255, 0.9); padding: 20px 0;
+    text-align: center; margin-top: auto; /* Pushes footer down */
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+    font-size: clamp(0.85rem, 2vw, 0.95rem);
+    transition: box-shadow 0.4s ease, color 0.4s ease;
+}
+body.dark-mode footer {
+     box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+     color: rgba(255, 255, 255, 0.8);
+}
+footer #current-year { /* JS will update this */ }
+
+/* --- Progress Indicators (Below Exercise/Tables) --- */
+#module-progress, #mult-progress {
+    font-size: clamp(0.9rem, 2.5vw, 1rem);
+    font-weight: 500; color: #666;
+    background-color: var(--progress-bg-light); padding: 8px 15px;
+    border-radius: 50px; display: inline-block; margin-top: 20px;
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+body.dark-mode #module-progress, body.dark-mode #mult-progress {
+     color: #ccc; background-color: var(--progress-bg-dark);
+}
+#module-progress span, #mult-progress span { /* The actual numbers */
+    font-weight: 700; color: var(--primary-color);
+    transition: color 0.4s ease;
+}
+body.dark-mode #module-progress span, body.dark-mode #mult-progress span {
+     color: var(--secondary-color);
+}
+
+/* --- Timer --- */
+#timer-area {
+    font-size: clamp(1rem, 3vw, 1.2rem);
+    color: var(--danger-color);
+    background-color: rgba(220, 53, 69, 0.08); padding: 8px 15px;
+    border-radius: var(--border-radius); display: inline-block;
+    font-weight: 700;
+    transition: background-color 0.4s ease, color 0.4s ease;
+    border: 1px solid rgba(220, 53, 69, 0.2);
+}
+body.dark-mode #timer-area {
+    background-color: rgba(220, 53, 69, 0.2);
+    border-color: rgba(220, 53, 69, 0.4);
+}
+#timer-area.pulsing { animation: timerPulse 1.2s infinite ease-in-out; } /* Apply pulse animation */
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+    .navbar-brand { font-size: 1.1rem; }
+    .user-info-nav { display: none; } /* Hide user info on smaller nav */
+    .main-container { padding-top: 30px; padding-bottom: 30px;}
+    .multiplication-item span { flex-basis: 50%; }
+    .multiplication-item input { flex: 0 0 60px; } /* Adjust fixed width */
+    .multiplication-item > div:last-child { margin-left: 5px; } /* Adjust feedback icon spacing */
+    .multiplication-item .feedback-icon { flex-basis: 15px; font-size: 1.1rem; }
+}
+@media (max-width: 576px) {
+    body { line-height: 1.5; }
+    .main-container { padding-top: 20px; padding-bottom: 20px; }
+    .navbar-brand { font-size: 1rem; }
+    .dark-mode-toggle { font-size: 1.4rem; }
+    .section-title { margin-bottom: 35px; }
+    .level-buttons .level-btn { margin-bottom: 10px; } /* Stack level buttons */
+    /* Stack action buttons below exercise/tables */
+    .text-center.d-flex { display: block !important; }
+    .text-center.d-flex .btn-action { width: 100%; margin-bottom: 10px; margin-left: 0 !important; margin-right: 0 !important; }
+    .text-center.d-flex .btn-action:last-child { margin-bottom: 0; }
+    #exercise-section, #multiplication-section { padding: 20px; }
+    #question-area { min-height: 60px; }
+    #answer-input { max-width: 180px; }
+    .multiplication-item span { padding-right: 5px; flex-basis: 55%; }
+    .multiplication-item input { width: 55px; padding: 5px; flex-basis: 55px; }
+    .multiplication-item > div:last-child { margin-left: 3px; }
+    .multiplication-item .feedback-icon { flex-basis: 15px; font-size: 1.1rem; }
+    #progress-chart-container { min-height: 280px; padding: 15px; }
+    .feedback-modal .modal-body i { font-size: 3.5rem; }
+    .feedback-modal .explanation { font-size: 0.9rem; padding: 10px; }
+}
+/* Smart TV adjustments (example) */
+@media (min-width: 1920px) {
+     body { font-size: 18px; }
+     .main-container { max-width: 1600px; padding-top: 60px; padding-bottom: 60px;}
+     .navbar-brand { font-size: 1.8rem; }
+     .user-info-nav { font-size: 1.1rem; padding: 8px 15px; }
+     .section-title { font-size: 2.8rem; margin-bottom: 70px; }
+     .exercise-card { padding: 40px; }
+     .exercise-card i { font-size: 5rem; }
+     .exercise-card h5 { font-size: 1.8rem; }
+     #exercise-section, #multiplication-section { padding: 60px; }
+     #question-area { font-size: 3.5rem; min-height: 90px; }
+     #answer-input { font-size: 2.8rem; max-width: 350px; padding: 15px 20px; }
+     .btn-action, .level-btn { padding: 18px 40px; font-size: 1.3rem; }
+     .multiplication-item { font-size: 1.3rem; }
+     .multiplication-item input { width: 90px; padding: 10px; flex-basis: 90px;}
+     .feedback-modal .modal-body i { font-size: 6rem; }
+     .feedback-modal .modal-body p { font-size: 1.4rem; }
+     .feedback-modal .explanation { font-size: 1.2rem; }
+     #progress-chart-container { min-height: 450px; }
+ }
+
+/* Accessibility focus styles */
+*:focus-visible {
+    outline: 3px solid var(--secondary-color) !important;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(37, 117, 252, 0.3) !important;
+}
+body.dark-mode *:focus-visible {
+     outline-color: var(--primary-color) !important;
+     box-shadow: 0 0 0 4px rgba(106, 17, 203, 0.4) !important;
+}
+/* Remove default blue outline from Bootstrap */
+.form-control:focus, .btn:focus {
+    box-shadow: none; /* Use focus-visible instead */
+}
