@@ -994,17 +994,49 @@ document.addEventListener('DOMContentLoaded', () => {
         doc.setLineWidth(0.8); doc.setDrawColor(borderColor2);
         doc.rect(margin / 2 + 3, margin / 2 + 3, pageWidth - margin - 6, pageHeight - margin - 6); // Borde interior
 
-        // Título Principal
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(30); // Tamaño grande para el título
-        let title = ""; let titleColor = [106, 17, 203]; // Default Morado
+       // --- Título Principal (Corregido) ---
+       doc.setFont('helvetica', 'bold');
+       // Reducir ligeramente el tamaño de fuente para asegurar que quepa mejor y por estética
+       doc.setFontSize(28); // Ajustado de 30 a 28 (puedes probar 26 o 24 si sigue siendo largo)
+       let title = "";
+       let titleColor = [106, 17, 203]; // Color Morado por defecto
 
-        if (isFinal) { title = "🏆 ¡GRAN CAMPEÓN MATEMÁTICO! 🏆"; titleColor = [218, 165, 32]; }
-        else if (isTableCert) { title = "📜 ¡MAESTRÍA EN TABLAS! 📜"; titleColor = [37, 117, 252]; }
-        else { title = `🏅 ¡NIVEL ${formatLevel(specificLevel)} SUPERADO! 🏅`; titleColor = hexToRgb(borderColor1); } // Usar color del borde
+       // Definir títulos SIN emojis para evitar problemas de renderizado en PDF
+       if (isFinal) {
+           title = "¡GRAN CAMPEÓN MATEMÁTICO!";
+           titleColor = [218, 165, 32]; // Darker Gold
+       } else if (isTableCert) {
+           title = "¡MAESTRÍA EN TABLAS!";
+           titleColor = [37, 117, 252]; // Blue
+       } else { // Certificado de Nivel
+           title = `¡NIVEL ${formatLevel(specificLevel)} SUPERADO!`;
+           // Usar el color del borde para consistencia (ya calculado antes)
+           titleColor = hexToRgb(borderColor1);
+       }
 
-        doc.setTextColor(titleColor[0], titleColor[1], titleColor[2]);
-        doc.text(title, pageWidth / 2, margin + 25, { align: 'center' });
+       // Establecer el color del texto
+       doc.setTextColor(titleColor[0], titleColor[1], titleColor[2]);
+
+       // Calcular el ancho máximo disponible para el texto del título dentro de los márgenes
+       // Restamos los márgenes laterales y un pequeño extra para que no quede pegado a los bordes
+       const titleMaxWidth = pageWidth - (margin * 2) - 10; // 10mm de padding extra (5mm a cada lado)
+
+       // Dibujar el texto centrado y con ajuste automático de línea (maxWidth)
+       doc.text(
+           title,           // El texto del título
+           pageWidth / 2,   // Posición X (centro de la página)
+           margin + 25,     // Posición Y (debajo del borde superior)
+           {
+               align: 'center',      // Alineación del texto
+               maxWidth: titleMaxWidth // Ancho máximo antes de saltar de línea
+           }
+       );
+       // Reset font size if needed for subsequent text elements, although it's redefined later
+       // doc.setFontSize(16); // Example reset
+
+       // --- El resto del código del certificado continúa aquí... ---
+       // doc.setFontSize(12); doc.setFont('helvetica', 'normal'); doc.setTextColor(50);
+       // ... (Código para "Este certificado se otorga a:", nombre, etc.)
 
         // Texto "Otorgado a"
         doc.setFontSize(16); doc.setFont('helvetica', 'normal'); doc.setTextColor(50, 50, 50);
